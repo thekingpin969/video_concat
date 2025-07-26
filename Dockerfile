@@ -1,24 +1,11 @@
-# Use Node base image with ffmpeg installed
-FROM jrottenberg/ffmpeg:4.4-ubuntu as ffmpeg
+FROM node:20
 
-FROM node:18
+RUN apt-get update && apt-get install -y ffmpeg
 
-# Copy ffmpeg binaries from previous stage
-COPY --from=ffmpeg /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
-COPY --from=ffmpeg /usr/local/bin/ffprobe /usr/local/bin/ffprobe
-
-# Set working directory
 WORKDIR /app
-
-# Install dependencies
-COPY package.json ./
-RUN npm install
-
-# Copy app code
 COPY . .
 
-# Expose port
-EXPOSE 3000
+RUN npm install
 
-# Start the app
+EXPOSE 3000
 CMD ["node", "server.js"]
